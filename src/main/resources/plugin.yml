@@ -1,0 +1,7 @@
+name: Rank-System
+version: '${project.version}'
+main: net.slqmy.rank_system.Rank_System
+api-version: '1.20'
+prefix: Rank System
+authors: [slqmy]
+description: A simple rank system project.
