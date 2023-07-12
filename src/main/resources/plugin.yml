@@ -1,7 +1,14 @@
 name: Rank-System
 version: '${project.version}'
-main: net.slqmy.rank_system.Rank_System
+main: net.slqmy.rank_system.Main
 api-version: '1.20'
 prefix: Rank System
 authors: [slqmy]
 description: A simple rank system project.
+commands:
+  rank:
+    usage: /rank
+    description: View and manipulate data related to the rank system!
+    aliases: [role]
+    permission: rank_system.rank
+    permission-message: "You don't have the required rank_system.rank permission to execute this command!"
