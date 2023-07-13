@@ -1,0 +1,19 @@
+# Set the default rank here.
+# If set, players will be given this rank on their first join.
+defaultRank:
+
+# Add ranks in the list bellow.
+ranks:
+# Here is what a typical list of ranks will look like:
+#  - owner:
+#      - name: "&4&lOwner"
+#      - description: "This rank is given to the owners of the server. It has access to every permission."
+#  - admin:
+#      - name: "&c&lAdmin"
+#      - description: "This rank is given to admins. It has many administrative permissions."
+#  - member:
+#      - name: "&fMember"
+#      - description: "Given to all member of the server. The rank has basic permissions."
+#  - guest:
+#      - name: "&7Guest"
+#      - description: "Given to players who have just joined the server. The rank has very basic permissions and does not allow interacting with the world."
