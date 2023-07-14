@@ -7,7 +7,7 @@ authors: [slqmy]
 description: A simple rank system project.
 commands:
   rank:
-    usage: /rank
+    usage: /rank <player> <rank name>
     description: View and manipulate data related to the rank system!
     aliases: [role]
     permission: rank_system.rank
