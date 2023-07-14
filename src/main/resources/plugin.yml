@@ -7,8 +7,8 @@ authors: [slqmy]
 description: A simple rank system project.
 commands:
   rank:
-    usage: /rank <player> <rank name>
+    usage: (op player or console only) /(rank | role) <player> <rank name>
     description: View and manipulate data related to the rank system!
     aliases: [role]
     permission: rank_system.rank
-    permission-message: "You don't have the required rank_system.rank permission to execute this command!"
+    permission-message: You don't have the required rank_system.rank permission to execute this command!

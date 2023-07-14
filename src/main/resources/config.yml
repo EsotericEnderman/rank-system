@@ -1,0 +1,24 @@
+# Here you can specify a default rank.
+# Simply add the name of the rank.
+# If specified, players will be given this rank when they first join the server.
+# For example:
+# defaultRank: guest
+defaultRank:
+
+# Here you can add ranks. A typical configuration may look like this:
+# Keep in mind, rank names have to be unique, but rank display names can be different.
+#ranks:
+#  - name: owner
+#    # Names that will be displayed as prefixes in chat and in the tab-list.
+#    displayName: "&4&lOwner" # Dark red and bold.
+#    permissions:
+#      - worldedit.help
+#  - name: admin
+#    displayName: "&c&lAdmin" # Red and bold.
+#    permissions:
+#      - worldedit.help
+#  - name: member
+#    displayName: Member # White.
+#  - name: guest
+#    displayName: "&7Guest" # Grey.
+ranks:
