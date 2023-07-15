@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,9 +16,11 @@ public final class NameTagManager {
 	private final RankManager rankManager;
 	private final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 
-	public NameTagManager(final Main plugin) { rankManager = plugin.getRankManager(); }
+	public NameTagManager(final @NotNull Main plugin) {
+		rankManager = plugin.getRankManager();
+	}
 
-	public void setNameTags(final Player player) {
+	public void setNameTags(final @NotNull Player player) {
 		assert scoreboardManager != null;
 
 		final Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
@@ -26,16 +29,16 @@ public final class NameTagManager {
 
 		// Create teams for every rank with the rank prefix as the prefix for the team.
 		final List<Rank> ranks = rankManager.getRanksList();
-		assert ranks != null;
 
 		for (final Rank rank : ranks) {
-			final	Team team = scoreboard.registerNewTeam(rank.getName());
+			final Team team = scoreboard.registerNewTeam(rank.getName());
 			team.setPrefix(rank.getDisplayName() + " ");
 		}
 
 		UUID playerUUID = player.getUniqueId();
 
-		// Add every OTHER player (the current player is managed with the addNewNameTag method) to the player's scoreboard.
+		// Add every OTHER player (the current player is managed with the addNewNameTag
+		// method) to the player's scoreboard.
 		for (final Player target : Bukkit.getOnlinePlayers()) {
 			UUID targetUUID = target.getUniqueId();
 
@@ -49,7 +52,7 @@ public final class NameTagManager {
 		}
 	}
 
-	public void addNewNameTag(final Player player) {
+	public void addNewNameTag(final @NotNull Player player) {
 		final String playerName = player.getName();
 		final Rank playerRank = rankManager.getPlayerRank(player.getUniqueId());
 		final String rankName = playerRank.getName();
@@ -65,7 +68,7 @@ public final class NameTagManager {
 	}
 
 	// Remove a player's name-tag from everyone's scoreboard.
-	public void removeNameTag(final Player player) {
+	public void removeNameTag(final @NotNull Player player) {
 		final String playerName = player.getName();
 
 		for (final Player target : Bukkit.getOnlinePlayers()) {

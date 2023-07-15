@@ -21,11 +21,11 @@ import java.util.logging.Logger;
 public final class Main extends JavaPlugin {
 
 	/*
-	 /rank command. /rank <player> <rank name>
-	 Name tags & chat display.
-	 Save in .yml file.
-	 Custom permissions.
-	*/
+	 * /rank command. /rank <player> <rank name>
+	 * Name tags & chat display.
+	 * Save in .yml file.
+	 * Custom permissions.
+	 */
 
 	private static final Logger LOGGER = Logger.getLogger("Minecraft");
 
@@ -34,12 +34,25 @@ public final class Main extends JavaPlugin {
 	private File playerRanksFile;
 	private YamlConfiguration playerRanks;
 
-	public static Logger getPluginLogger() { return LOGGER; }
+	public static Logger getPluginLogger() {
+		return LOGGER;
+	}
 
-	public RankManager getRankManager() { return rankManager; }
-	public NameTagManager getNameTagManager() { return nameTagManager; }
-	public File getPlayerRanksFile() { return playerRanksFile; }
-	public YamlConfiguration getPlayerRanks() { return playerRanks; }
+	public RankManager getRankManager() {
+		return rankManager;
+	}
+
+	public NameTagManager getNameTagManager() {
+		return nameTagManager;
+	}
+
+	public File getPlayerRanksFile() {
+		return playerRanksFile;
+	}
+
+	public YamlConfiguration getPlayerRanks() {
+		return playerRanks;
+	}
 
 	@Override
 	public void onEnable() {
@@ -53,8 +66,8 @@ public final class Main extends JavaPlugin {
 
 			if (!creationSuccessful) {
 				final String message = LOG_PREFIX + "Failed to create plugin directory! Cancelling plugin startup.\n"
-					+ LOG_PREFIX + "The plugin needs access to the data folder to function properly.\n"
-					+ LOG_PREFIX + "Make sure the server has the needed permissions to modify files.";
+						+ LOG_PREFIX + "The plugin needs access to the data folder to function properly.\n"
+						+ LOG_PREFIX + "Make sure the server has the needed permissions to modify files.";
 
 				LOGGER.info(message);
 
@@ -62,7 +75,8 @@ public final class Main extends JavaPlugin {
 			}
 		}
 
-		// Make sure the plugin config exists. If there is no config, a new file is generated.
+		// Make sure the plugin config exists. If there is no config, a new file is
+		// generated.
 		final FileConfiguration config = getConfig();
 
 		config.options().copyDefaults();
@@ -84,16 +98,16 @@ public final class Main extends JavaPlugin {
 		playerRanksFile = playerRanksTuple.first;
 		playerRanks = playerRanksTuple.second;
 
-		// The rankManager needs playerRanks to be assigned first, or else an error will occur.
+		// The rankManager needs playerRanks to be assigned first, or else an error will
+		// occur.
 		rankManager = new RankManager(this);
 
 		// Check for duplicate rank names.
 		final List<Rank> ranks = rankManager.getRanksList();
 		final List<String> rankNames = new ArrayList<>();
 
-		assert ranks != null;
 		for (final Rank rank : ranks) {
-			final	String rankName = rank.getName();
+			final String rankName = rank.getName();
 
 			if (rankNames.contains(rankName)) {
 				final String message = LOG_PREFIX + "Invalid configuration! Duplicate rank entry for rank '" + rankName + "'!\n"

@@ -3,6 +3,8 @@ package net.slqmy.rank_system.utility;
 import net.slqmy.rank_system.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,15 +12,21 @@ import java.util.logging.Logger;
 
 public final class Utility {
 	private static final Logger LOGGER = Main.getPluginLogger();
-
 	private static final String LOG_PREFIX = "[Rank-System] ";
 	private static final String CHAT_PREFIX = "[" + ChatColor.BOLD + ChatColor.GREEN + "Rank-System" + ChatColor.RESET
 			+ "] ";
 
-	public static String getLogPrefix() { return LOG_PREFIX; }
-	public static String getChatPrefix() { return CHAT_PREFIX; }
+	public static String getLogPrefix() {
+		return LOG_PREFIX;
+	}
 
-	public static Pair<File, YamlConfiguration> initiateYAMLFile(String name, final Main plugin) throws IOException {
+	public static String getChatPrefix() {
+		return CHAT_PREFIX;
+	}
+
+	@Contract("_, _ -> new")
+	public static @NotNull Pair<File, YamlConfiguration> initiateYAMLFile(String name, final @NotNull Main plugin)
+			throws IOException {
 		name += ".yml";
 
 		final File file = new File(plugin.getDataFolder(), name);

@@ -13,6 +13,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,9 +24,9 @@ public final class EventListener implements Listener {
 	private final YamlConfiguration config;
 	private final RankManager rankManager;
 	private final NameTagManager nameTagManager;
-	private final Map<UUID,PermissionAttachment> permissions;
+	private final Map<UUID, PermissionAttachment> permissions;
 
-	EventListener(final Main plugin) {
+	EventListener(final @NotNull Main plugin) {
 		this.plugin = plugin;
 		this.config = (YamlConfiguration) plugin.getConfig();
 		this.rankManager = plugin.getRankManager();
@@ -34,7 +35,7 @@ public final class EventListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPlayerJoin(final PlayerJoinEvent event) {
+	public void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
 		final String defaultRank = config.getString("defaultRank");
 		final Player player = event.getPlayer();
 		final UUID playerUUID = player.getUniqueId();
@@ -44,7 +45,8 @@ public final class EventListener implements Listener {
 			final boolean success = rankManager.setRank(playerUUID, defaultRank, true);
 
 			if (!success) {
-				Logger.getLogger("Minecraft").info(Utility.getLogPrefix() + "Invalid configuration! Default rank does not exist in rank list.");
+				Logger.getLogger("Minecraft")
+						.info(Utility.getLogPrefix() + "Invalid configuration! Default rank does not exist in rank list.");
 				return;
 			}
 		}
@@ -70,7 +72,7 @@ public final class EventListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPlayerQuit(final PlayerQuitEvent event) {
+	public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		final UUID playerUUID = player.getUniqueId();
 
@@ -80,14 +82,16 @@ public final class EventListener implements Listener {
 	}
 
 	@EventHandler
-	public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
+	public void onAsyncPlayerChat(final @NotNull AsyncPlayerChatEvent event) {
 		// Custom chat message:
 		// (rank formatting) <rank name> (white) <player> » (grey) <message>
 		event.setCancelled(true);
 
 		final Player player = event.getPlayer();
 
-		// Note: colour codes that represent colours actually reset the previous colour codes.
-		Bukkit.broadcastMessage(rankManager.getPlayerRank(player.getUniqueId()).getDisplayName() + " " + player.getName() +  " » " + ChatColor.GRAY + event.getMessage());
+		// Note: colour codes that represent colours actually reset the previous colour
+		// codes.
+		Bukkit.broadcastMessage(rankManager.getPlayerRank(player.getUniqueId()).getDisplayName() + " " + player.getName()
+				+ " » " + ChatColor.GRAY + event.getMessage());
 	}
 }

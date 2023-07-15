@@ -27,10 +27,13 @@ public final class RankCommand implements CommandExecutor {
 	private final String chatPrefix = Utility.getChatPrefix();
 	private final String logPrefix = Utility.getLogPrefix();
 
-	public RankCommand(final Main plugin) { this.rankManager = plugin.getRankManager(); }
+	public RankCommand(final @NotNull Main plugin) {
+		this.rankManager = plugin.getRankManager();
+	}
 
 	@Override
-	public boolean onCommand(@NotNull final CommandSender sender, @NotNull final Command command, @NotNull final String label, @NotNull final String[] args) {
+	public boolean onCommand(@NotNull final CommandSender sender, @NotNull final Command command,
+			@NotNull final String label, @NotNull final String[] args) {
 		if (sender instanceof Player) {
 			final Player player = (Player) sender;
 
@@ -46,18 +49,22 @@ public final class RankCommand implements CommandExecutor {
 						final String rankName = args[1];
 						final Rank rank = rankManager.getRank(rankName);
 						final UUID targetUUID = target.getUniqueId();
-						final boolean success =	rankManager.setRank(targetUUID, rankName, false);
+						final boolean success = rankManager.setRank(targetUUID, rankName, false);
 
 						if (success) {
 							String rankDisplayName = rank.getDisplayName();
 
 							if (player.getUniqueId() == targetUUID) {
-								player.sendMessage(chatPrefix + ChatColor.GREEN + "Successfully set your rank to " + rankDisplayName + ChatColor.GREEN + "!");
+								player.sendMessage(chatPrefix + ChatColor.GREEN + "Successfully set your rank to " + rankDisplayName
+										+ ChatColor.GREEN + "!");
 							} else {
-								player.sendMessage(chatPrefix + ChatColor.GREEN + "Successfully set " + ChatColor.BOLD + target.getName() + ChatColor.RESET + ChatColor.GREEN + "'s rank to " + ChatColor.RESET + rankDisplayName + ChatColor.GREEN + "!");
+								player.sendMessage(chatPrefix + ChatColor.GREEN + "Successfully set " + ChatColor.BOLD
+										+ target.getName() + ChatColor.RESET + ChatColor.GREEN + "'s rank to " + ChatColor.RESET
+										+ rankDisplayName + ChatColor.GREEN + "!");
 
 								if (target.isOnline()) {
-									((Player) target).sendMessage(chatPrefix + ChatColor.GREEN + "Your rank has been set to " + rankDisplayName + ChatColor.GREEN + "!");
+									((Player) target).sendMessage(chatPrefix + ChatColor.GREEN + "Your rank has been set to "
+											+ rankDisplayName + ChatColor.GREEN + "!");
 								}
 							}
 						} else {
@@ -82,17 +89,17 @@ public final class RankCommand implements CommandExecutor {
 
 				if (target.getName() != null) {
 					final String rank = args[1];
-					boolean success =	rankManager.setRank(target.getUniqueId(), rank, false);
+					boolean success = rankManager.setRank(target.getUniqueId(), rank, false);
+
+					final String message;
 
 					if (success) {
-						final String message = logPrefix + "Successfully set " + target.getName() + "'s rank to " + rank + "!";
-
-						LOGGER.info(message);
+						message = logPrefix + "Successfully set " + target.getName() + "'s rank to " + rank + "!";
 					} else {
-						final String message = logPrefix + "That rank does not exist in the configuration file!";
-
-						LOGGER.info(message);
+						message = logPrefix + "That rank does not exist in the configuration file!";
 					}
+
+					LOGGER.info(message);
 				} else {
 					final String message = logPrefix + "That player does not exist!";
 

@@ -18,10 +18,13 @@ import java.util.List;
 public final class RankCommandTabCompleter implements TabCompleter {
 	private final RankManager rankManager;
 
-	public RankCommandTabCompleter(Main plugin) { this.rankManager = plugin.getRankManager(); }
+	public RankCommandTabCompleter(@NotNull Main plugin) {
+		this.rankManager = plugin.getRankManager();
+	}
 
 	@Override
-	public @NotNull List<String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Command command, final @NotNull String label, final @NotNull String[] args) {
+	public @NotNull List<String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Command command,
+			final @NotNull String label, final @NotNull String[] args) {
 		final List<String> results = new ArrayList<>();
 
 		if (sender instanceof Player && sender.isOp()) {
