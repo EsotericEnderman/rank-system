@@ -1,4 +1,4 @@
-package net.slqmy.rank_system;
+package net.slqmy.rank_system.types;
 
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.Contract;
@@ -49,15 +49,15 @@ public final class Rank {
 	@Contract("_ -> new")
 	public static @NotNull Rank from(final @NotNull Map<String, Object> rank) {
 		// Check for invalid input.
-		if (!rank.containsKey("name") || !rank.containsKey("displayName")) {
-			throw new IllegalArgumentException("Object must have properties 'name' & 'displayName'!");
+		if (!rank.containsKey("name") || !rank.containsKey("display-name")) {
+			throw new IllegalArgumentException("Object must have properties 'name' & 'display-name'!");
 		}
 
 		if (rank.get(PERMISSIONS_KEY) != null && (!(rank.get(PERMISSIONS_KEY) instanceof List))) {
 			throw new IllegalArgumentException("Type of property 'permissions' must be List<String>!");
 		}
 
-		return new Rank((String) rank.get("name"), (String) rank.get("displayName"),
+		return new Rank((String) rank.get("name"), (String) rank.get("display-name"),
 				(List<String>) rank.get(PERMISSIONS_KEY));
 	}
 }

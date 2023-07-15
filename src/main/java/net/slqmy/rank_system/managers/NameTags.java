@@ -1,7 +1,7 @@
 package net.slqmy.rank_system.managers;
 
 import net.slqmy.rank_system.Main;
-import net.slqmy.rank_system.Rank;
+import net.slqmy.rank_system.types.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-public final class NameTagManager {
-	private final RankManager rankManager;
+public final class NameTags {
+	private final Ranks ranks;
 	private final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 
-	public NameTagManager(final @NotNull Main plugin) {
-		rankManager = plugin.getRankManager();
+	public NameTags(final @NotNull Main plugin) {
+		ranks = plugin.getRankManager();
 	}
 
 	public void setNameTags(final @NotNull Player player) {
@@ -28,9 +28,9 @@ public final class NameTagManager {
 		player.setScoreboard(scoreboard);
 
 		// Create teams for every rank with the rank prefix as the prefix for the team.
-		final List<Rank> ranks = rankManager.getRanksList();
+		final List<Rank> ranksList = this.ranks.getRanksList();
 
-		for (final Rank rank : ranks) {
+		for (final Rank rank : ranksList) {
 			final Team team = scoreboard.registerNewTeam(rank.getName());
 			team.setPrefix(rank.getDisplayName() + " ");
 		}
@@ -43,7 +43,7 @@ public final class NameTagManager {
 			UUID targetUUID = target.getUniqueId();
 
 			if (targetUUID.equals(playerUUID)) {
-				final Team targetRankTeam = scoreboard.getTeam(rankManager.getPlayerRank(targetUUID).getName());
+				final Team targetRankTeam = scoreboard.getTeam(this.ranks.getPlayerRank(targetUUID).getName());
 
 				if (targetRankTeam != null) {
 					targetRankTeam.addEntry(target.getName());
@@ -54,7 +54,7 @@ public final class NameTagManager {
 
 	public void addNewNameTag(final @NotNull Player player) {
 		final String playerName = player.getName();
-		final Rank playerRank = rankManager.getPlayerRank(player.getUniqueId());
+		final Rank playerRank = ranks.getPlayerRank(player.getUniqueId());
 		final String rankName = playerRank.getName();
 
 		// Add a player to everyone's scoreboard.

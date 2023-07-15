@@ -1,7 +1,7 @@
 package net.slqmy.rank_system.managers;
 
 import net.slqmy.rank_system.Main;
-import net.slqmy.rank_system.Rank;
+import net.slqmy.rank_system.types.Rank;
 import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class RankManager {
+public class Ranks {
 	private static final Logger LOGGER = Main.getPluginLogger();
 	private static final Rank nullRank = Rank.getNullRank();
 
@@ -34,7 +34,7 @@ public class RankManager {
 
 	private final String logPrefix = Utility.getLogPrefix();
 
-	public RankManager(final @NotNull Main plugin) {
+	public Ranks(final @NotNull Main plugin) {
 		this.plugin = plugin;
 		this.config = (YamlConfiguration) plugin.getConfig();
 		this.playerRanks = plugin.getPlayerRanks();
@@ -94,7 +94,7 @@ public class RankManager {
 
 		// If it's not the default rank, save the rank.
 		playerRanks.set(uuid.toString(),
-				Objects.equals(config.getString("defaultRank"), targetRankName) ? null : targetRankName);
+				Objects.equals(config.getString("default-rank"), targetRankName) ? null : targetRankName);
 
 		try {
 			playerRanks.save(plugin.getPlayerRanksFile());
@@ -110,10 +110,10 @@ public class RankManager {
 			final Player player = Bukkit.getPlayer(uuid);
 			assert player != null;
 
-			final NameTagManager nameTagManager = plugin.getNameTagManager();
+			final NameTags nameTags = plugin.getNameTagManager();
 
-			nameTagManager.removeNameTag(player);
-			nameTagManager.addNewNameTag(player);
+			nameTags.removeNameTag(player);
+			nameTags.addNewNameTag(player);
 		}
 
 		return true;
@@ -154,7 +154,7 @@ public class RankManager {
 	}
 
 	public Rank getDefaultRank() {
-		return getRank(config.getString("defaultRank"));
+		return getRank(config.getString("default-rank"));
 	}
 
 	public @NotNull List<Rank> getRanksList() {

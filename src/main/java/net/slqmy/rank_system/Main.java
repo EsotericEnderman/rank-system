@@ -1,10 +1,11 @@
 package net.slqmy.rank_system;
 
-import net.slqmy.rank_system.commands.RankCommand;
-import net.slqmy.rank_system.managers.NameTagManager;
-import net.slqmy.rank_system.managers.RankManager;
+import net.slqmy.rank_system.commands.Rank;
+import net.slqmy.rank_system.events.EventListener;
+import net.slqmy.rank_system.managers.NameTags;
+import net.slqmy.rank_system.managers.Ranks;
 import net.slqmy.rank_system.tab_completers.RankCommandTabCompleter;
-import net.slqmy.rank_system.utility.Pair;
+import net.slqmy.rank_system.utility.types.Pair;
 import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -29,8 +30,8 @@ public final class Main extends JavaPlugin {
 
 	private static final Logger LOGGER = Logger.getLogger("Minecraft");
 
-	private RankManager rankManager;
-	private NameTagManager nameTagManager;
+	private Ranks ranks;
+	private NameTags nameTags;
 	private File playerRanksFile;
 	private YamlConfiguration playerRanks;
 
@@ -38,12 +39,12 @@ public final class Main extends JavaPlugin {
 		return LOGGER;
 	}
 
-	public RankManager getRankManager() {
-		return rankManager;
+	public Ranks getRankManager() {
+		return ranks;
 	}
 
-	public NameTagManager getNameTagManager() {
-		return nameTagManager;
+	public NameTags getNameTagManager() {
+		return nameTags;
 	}
 
 	public File getPlayerRanksFile() {
@@ -98,15 +99,15 @@ public final class Main extends JavaPlugin {
 		playerRanksFile = playerRanksTuple.first;
 		playerRanks = playerRanksTuple.second;
 
-		// The rankManager needs playerRanks to be assigned first, or else an error will
+		// The ranks class needs playerRanks to be assigned first, or else an error will
 		// occur.
-		rankManager = new RankManager(this);
+		ranks = new Ranks(this);
 
 		// Check for duplicate rank names.
-		final List<Rank> ranks = rankManager.getRanksList();
+		final List<net.slqmy.rank_system.types.Rank> ranksList = this.ranks.getRanksList();
 		final List<String> rankNames = new ArrayList<>();
 
-		for (final Rank rank : ranks) {
+		for (final net.slqmy.rank_system.types.Rank rank : ranksList) {
 			final String rankName = rank.getName();
 
 			if (rankNames.contains(rankName)) {
@@ -121,12 +122,12 @@ public final class Main extends JavaPlugin {
 		}
 
 		// And the name tag manager needs the rank manager to be assigned.
-		nameTagManager = new NameTagManager(this);
+		nameTags = new NameTags(this);
 
 		// Initiate rank command and event listener.
 		final PluginCommand rank = getCommand("rank");
 		assert rank != null;
-		rank.setExecutor(new RankCommand(this));
+		rank.setExecutor(new Rank(this));
 		rank.setTabCompleter(new RankCommandTabCompleter(this));
 
 		Bukkit.getPluginManager().registerEvents(new EventListener(this), this);

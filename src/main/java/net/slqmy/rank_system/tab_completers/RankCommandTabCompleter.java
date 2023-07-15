@@ -1,8 +1,8 @@
 package net.slqmy.rank_system.tab_completers;
 
 import net.slqmy.rank_system.Main;
-import net.slqmy.rank_system.Rank;
-import net.slqmy.rank_system.managers.RankManager;
+import net.slqmy.rank_system.types.Rank;
+import net.slqmy.rank_system.managers.Ranks;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class RankCommandTabCompleter implements TabCompleter {
-	private final RankManager rankManager;
+	private final Ranks ranks;
 
 	public RankCommandTabCompleter(@NotNull Main plugin) {
-		this.rankManager = plugin.getRankManager();
+		this.ranks = plugin.getRankManager();
 	}
 
 	@Override
@@ -28,14 +28,14 @@ public final class RankCommandTabCompleter implements TabCompleter {
 		final List<String> results = new ArrayList<>();
 
 		if (sender instanceof Player && sender.isOp()) {
-			if (args.length == RankManager.getPlayerInputArgumentNumber()) {
+			if (args.length == Ranks.getPlayerInputArgumentNumber()) {
 				for (final OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 					results.add(player.getName());
 				}
 
 				return StringUtil.copyPartialMatches(args[0], results, new ArrayList<>());
-			} else if (args.length == RankManager.getRankInputArgumentNumber()) {
-				for (final Rank rank : rankManager.getRanksList()) {
+			} else if (args.length == Ranks.getRankInputArgumentNumber()) {
+				for (final Rank rank : ranks.getRanksList()) {
 					results.add(rank.getName());
 				}
 

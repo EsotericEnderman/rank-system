@@ -1,6 +1,7 @@
 package net.slqmy.rank_system.utility;
 
 import net.slqmy.rank_system.Main;
+import net.slqmy.rank_system.utility.types.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Contract;

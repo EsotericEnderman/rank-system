@@ -1,8 +1,7 @@
 package net.slqmy.rank_system.commands;
 
 import net.slqmy.rank_system.Main;
-import net.slqmy.rank_system.Rank;
-import net.slqmy.rank_system.managers.RankManager;
+import net.slqmy.rank_system.managers.Ranks;
 import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,18 +16,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public final class RankCommand implements CommandExecutor {
+public final class Rank implements CommandExecutor {
 	// rank <player> <rank name>
 
 	private static final Logger LOGGER = Main.getPluginLogger();
 
-	private final RankManager rankManager;
+	private final Ranks ranks;
 
 	private final String chatPrefix = Utility.getChatPrefix();
 	private final String logPrefix = Utility.getLogPrefix();
 
-	public RankCommand(final @NotNull Main plugin) {
-		this.rankManager = plugin.getRankManager();
+	public Rank(final @NotNull Main plugin) {
+		this.ranks = plugin.getRankManager();
 	}
 
 	@Override
@@ -38,7 +37,7 @@ public final class RankCommand implements CommandExecutor {
 			final Player player = (Player) sender;
 
 			if (player.isOp()) {
-				if (args.length != RankManager.getRankCommandArgumentLength()) {
+				if (args.length != Ranks.getRankCommandArgumentLength()) {
 					return false;
 				} else {
 					final String targetName = args[0];
@@ -47,9 +46,9 @@ public final class RankCommand implements CommandExecutor {
 
 					if (target.getName() != null) {
 						final String rankName = args[1];
-						final Rank rank = rankManager.getRank(rankName);
+						final net.slqmy.rank_system.types.Rank rank = ranks.getRank(rankName);
 						final UUID targetUUID = target.getUniqueId();
-						final boolean success = rankManager.setRank(targetUUID, rankName, false);
+						final boolean success = ranks.setRank(targetUUID, rankName, false);
 
 						if (success) {
 							String rankDisplayName = rank.getDisplayName();
@@ -78,7 +77,7 @@ public final class RankCommand implements CommandExecutor {
 				player.sendMessage(chatPrefix + ChatColor.RED + "You must be op to execute this command!");
 			}
 		} else if (sender instanceof ConsoleCommandSender) {
-			if (args.length != RankManager.getRankCommandArgumentLength()) {
+			if (args.length != Ranks.getRankCommandArgumentLength()) {
 				final String message = logPrefix + "Incorrect command usage! Please use /rank <player> <rank name>";
 
 				LOGGER.info(message);
@@ -89,7 +88,7 @@ public final class RankCommand implements CommandExecutor {
 
 				if (target.getName() != null) {
 					final String rank = args[1];
-					boolean success = rankManager.setRank(target.getUniqueId(), rank, false);
+					boolean success = ranks.setRank(target.getUniqueId(), rank, false);
 
 					final String message;
 
