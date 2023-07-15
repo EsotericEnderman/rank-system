@@ -2,6 +2,7 @@ package net.slqmy.rank_system.managers;
 
 import net.slqmy.rank_system.Main;
 import net.slqmy.rank_system.Rank;
+import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -9,32 +10,23 @@ import org.bukkit.permissions.PermissionAttachment;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class RankManager {
 	private final Main plugin;
+	private final YamlConfiguration config;
 	private final YamlConfiguration playerRanks;
 	private final HashMap<UUID, PermissionAttachment> permissions = new HashMap<>();
 	public HashMap<UUID, PermissionAttachment> getPermissions() { return permissions; }
 
 	public RankManager(final Main plugin) {
 		this.plugin = plugin;
+		this.config = (YamlConfiguration) plugin.getConfig();
 		this.playerRanks = plugin.getPlayerRanks();
 	}
 
 	public boolean setRank(final UUID uuid, final String rankName, final boolean isFirstJoin) {
-		final YamlConfiguration config = (YamlConfiguration) plugin.getConfig();
-		final List<LinkedHashMap<String, Object>> ranks = (List<LinkedHashMap<String, Object>>) config.getList("ranks");
-		Rank targetRank = null;
-
-		// Find rank from file.
-		assert ranks != null;
-		for (final LinkedHashMap<String, Object> rank : ranks) {
-			final Rank currentRank = Rank.from(rank);
-
-			if (currentRank.getName().equalsIgnoreCase(rankName)) {
-				targetRank = currentRank;
-			}
-		}
+		final Rank targetRank = getRank(rankName);
 
 		if (targetRank == null) {
 			return false;
@@ -54,7 +46,7 @@ public class RankManager {
 			}
 
 			// Remove previous permissions (if there are any).
-			for (final String permission : plugin.getRankManager().getRank(uuid).getPermissions()) {
+			for (final String permission : plugin.getRankManager().getPlayerRank(uuid).getPermissions()) {
 				// If-check just to be safe.
 				if (player.hasPermission(permission)) {
 					attachment.unsetPermission(permission);
@@ -67,46 +59,72 @@ public class RankManager {
 			}
 		}
 
-		// If it's not the default rank, give the rank to the player.
-		if (!Objects.equals(config.getString("defaultRank"), targetRank.getName())) {
-			playerRanks.set(uuid.toString(), targetRank.getName());
+		final String targetRankName = targetRank.getName();
 
-			try {
-				playerRanks.save(plugin.getPlayerRanksFile());
-			} catch (final IOException exception) {
-				System.out.println("[Rank-System] Error while saving rank " + rankName + " to player with UUID " + uuid + "!");
-				System.out.println(exception.getMessage());
+		// If it's not the default rank, save the rank.
+		playerRanks.set(uuid.toString(), Objects.equals(config.getString("defaultRank"), targetRankName) ? null : targetRankName);
 
-				exception.printStackTrace();
-			}
+		try {
+			playerRanks.save(plugin.getPlayerRanksFile());
+		} catch (final IOException exception) {
+			Logger logger = Logger.getLogger("Minecraft");
 
-			if (Bukkit.getOfflinePlayer(uuid).isOnline()) {
-				Player player = Bukkit.getPlayer(uuid);
+			logger.info(Utility.getLogPrefix() + "Error while saving rank " + targetRankName + " to player with UUID " + uuid + "!");
+			logger.info(Utility.getLogPrefix() + exception.getMessage());
 
-				NameTagManager nameTagManager = plugin.getNameTagManager();
-				nameTagManager.removeNameTag(player);
-				assert player != null;
-				nameTagManager.addNewNameTag(player);
-			}
+			exception.printStackTrace();
+		}
+
+
+		// Give the player the rank's name prefix.
+		if (Bukkit.getOfflinePlayer(uuid).isOnline()) {
+			final	Player player = Bukkit.getPlayer(uuid);
+			assert player != null;
+
+			final	NameTagManager nameTagManager = plugin.getNameTagManager();
+
+			nameTagManager.removeNameTag(player);
+			nameTagManager.addNewNameTag(player);
 		}
 
 		return true;
 	}
 
-	public Rank getRank(final UUID uuid) {
-		final String rankName = playerRanks.getString(uuid.toString());
+	public Rank getPlayerRank(final UUID uuid) {
+		String playerRankName = playerRanks.getString(uuid.toString());
 
-		final List<LinkedHashMap<String, Object>> ranks = (List<LinkedHashMap<String, Object>>) plugin.getConfig().getList("ranks");
+		if (playerRankName == null) {
+			return getDefaultRank();
+		}
+
+		return getRank(playerRankName);
+	}
+
+	public Rank getRank(final String rankName) {
+		final List<Rank> ranks = getRanksList();
 
 		assert ranks != null;
-		for (final LinkedHashMap<String, Object> rank : ranks) {
-			final Rank currentRank = Rank.from(rank);
-
-			if (currentRank.getName().equalsIgnoreCase(rankName)) {
-				return currentRank;
+		for (final Rank rank : ranks) {
+			if (rank.getName().equalsIgnoreCase(rankName)) {
+				return rank;
 			}
 		}
 
 		return null;
+	}
+
+	public Rank getDefaultRank() { return getRank(config.getString("defaultRank")); }
+
+	public List<Rank> getRanksList() {
+		final List<Rank> results = new ArrayList<>();
+
+		final List<LinkedHashMap<String, Object>> ranks = (List<LinkedHashMap<String, Object>>) config.getList("ranks");
+		assert ranks != null;
+
+		for (LinkedHashMap<String, Object> rank : ranks) {
+			results.add(Rank.from(rank));
+		}
+
+		return results;
 	}
 }

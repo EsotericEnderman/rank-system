@@ -1,9 +1,9 @@
 package net.slqmy.rank_system;
 
-import net.slqmy.rank_system.autocompleters.RankCommandTabCompleter;
 import net.slqmy.rank_system.commands.RankCommand;
 import net.slqmy.rank_system.managers.NameTagManager;
 import net.slqmy.rank_system.managers.RankManager;
+import net.slqmy.rank_system.tab_completers.RankCommandTabCompleter;
 import net.slqmy.rank_system.utility.Pair;
 import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
@@ -15,8 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
 	/*
@@ -26,10 +26,10 @@ public final class Main extends JavaPlugin {
 	 Custom permissions.
 	*/
 
-	private final RankManager rankManager = new RankManager(this);
+	private RankManager rankManager;
 	public RankManager getRankManager() { return rankManager; }
 
-	private final NameTagManager nameTagManager = new NameTagManager(this);
+	private NameTagManager nameTagManager;
 	public NameTagManager getNameTagManager() { return nameTagManager; }
 
 	private File playerRanksFile;
@@ -44,12 +44,15 @@ public final class Main extends JavaPlugin {
 		// Make sure the plugin folder exists.
 		final File dataFolder = getDataFolder();
 
+		final Logger logger = Logger.getLogger("Minecraft");
+
 		if (!dataFolder.exists()) {
 			final boolean creationSuccessful = dataFolder.mkdir();
 
 			if (!creationSuccessful) {
-				System.out.println("[Rank-System] Failed to create plugin directory! Cancelling plugin startup.");
-				System.out.println("[Rank-System] Make sure the server has the required permissions to create files and folders.");
+				logger.info(Utility.getLogPrefix() + "Failed to create plugin directory! Cancelling plugin startup.");
+				logger.info(Utility.getLogPrefix() + "The plugin needs access to the data folder to function properly.");
+				logger.info(Utility.getLogPrefix() + "Make sure the server has the required permissions to create files and folders.");
 
 				return;
 			}
@@ -61,33 +64,14 @@ public final class Main extends JavaPlugin {
 		config.options().copyDefaults();
 		saveDefaultConfig();
 
-		// Check for duplicate rank names.
-		final List<LinkedHashMap<String, Object>> ranks = (List<LinkedHashMap<String, Object>>) config.getList("ranks");
-		final List<String> rankNames = new ArrayList<>();
-
-		assert ranks != null;
-		for (LinkedHashMap<String, Object> rank : ranks) {
-			Rank currentRank = Rank.from(rank);
-
-			String rankName = currentRank.getName();
-
-			if (rankNames.contains(rankName)) {
-				System.out.println("[Rank-System] Invalid configuration! Duplicate rank entry for rank '" + rankName + "'!");
-				System.out.println("[Rank-System] Cancelling plugin startup.");
-				return;
-			}
-
-			rankNames.add(currentRank.getName());
-		}
-
 		// Initiate player-ranks file if it does not exist yet.
 		final Pair<File, YamlConfiguration> playerRanksTuple;
 
 		try {
-			playerRanksTuple =	Utility.initiateYAMLFile("player-ranks", this);
+			playerRanksTuple = Utility.initiateYAMLFile("player-ranks", this);
 		} catch (final IOException exception) {
-			System.out.println("[Rank-System] Error while creating file 'player-ranks.yml'! Cancelling plugin startup.");
-			System.out.println(exception.getMessage());
+			logger.info(Utility.getLogPrefix() + "Error while creating file 'player-ranks.yml'! Cancelling plugin startup.");
+			logger.info(Utility.getLogPrefix() + exception.getMessage());
 
 			exception.printStackTrace();
 			return;
@@ -96,11 +80,34 @@ public final class Main extends JavaPlugin {
 		playerRanksFile = playerRanksTuple.first;
 		playerRanks = playerRanksTuple.second;
 
+		// The rankManager needs playerRanks to be assigned first, or else an error will occur.
+		rankManager = new RankManager(this);
+
+		// Check for duplicate rank names.
+		final List<Rank> ranks = rankManager.getRanksList();
+		final List<String> rankNames = new ArrayList<>();
+
+		assert ranks != null;
+		for (final Rank rank : ranks) {
+			final	String rankName = rank.getName();
+
+			if (rankNames.contains(rankName)) {
+				logger.info(Utility.getLogPrefix() + "Invalid configuration! Duplicate rank entry for rank '" + rankName + "'!");
+				logger.info(Utility.getLogPrefix() + "Cancelling plugin startup.");
+				return;
+			}
+
+			rankNames.add(rankName);
+		}
+
+		// And the name tag manager needs the rank manager to be assigned.
+		nameTagManager = new NameTagManager(this);
+
 		// Initiate rank command and event listener.
 		final PluginCommand rank = getCommand("rank");
 		assert rank != null;
 		rank.setExecutor(new RankCommand(this));
-		rank.setTabCompleter(new RankCommandTabCompleter());
+		rank.setTabCompleter(new RankCommandTabCompleter(this));
 
 		Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
 	}
