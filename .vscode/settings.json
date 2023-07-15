@@ -1,3 +1,4 @@
 {
-	"cSpell.words": ["aowner", "badmin", "Bukkit", "cmember", "dguest"]
+	"cSpell.words": ["aowner", "badmin", "Bukkit", "cmember", "dguest"],
+	"java.compile.nullAnalysis.mode": "automatic"
 }
