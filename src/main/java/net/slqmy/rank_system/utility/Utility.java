@@ -9,25 +9,27 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 public final class Utility {
-	private static final String logPrefix = "[Rank-System] ";
-	public static String getLogPrefix() { return logPrefix; }
+	private static final Logger LOGGER = Main.getPluginLogger();
 
-	private static final String chatPrefix = "[" + ChatColor.BOLD + ChatColor.GREEN + "Rank-System" + ChatColor.RESET + "] ";
-	public static String getChatPrefix() { return chatPrefix; }
+	private static final String LOG_PREFIX = "[Rank-System] ";
+	private static final String CHAT_PREFIX = "[" + ChatColor.BOLD + ChatColor.GREEN + "Rank-System" + ChatColor.RESET
+			+ "] ";
+
+	public static String getLogPrefix() { return LOG_PREFIX; }
+	public static String getChatPrefix() { return CHAT_PREFIX; }
 
 	public static Pair<File, YamlConfiguration> initiateYAMLFile(String name, final Main plugin) throws IOException {
 		name += ".yml";
 
-		final Logger logger = Logger.getLogger("Minecraft");
-
 		final File file = new File(plugin.getDataFolder(), name);
 
-		logger.info(getLogPrefix() + "Attempting to create file " + name + ".");
+		final String message = LOG_PREFIX + "Attempting to create file " + name + ".";
+		LOGGER.info(message);
 
 		final boolean fileAlreadyExists = !file.createNewFile();
 
 		if (fileAlreadyExists) {
-			logger.info(getLogPrefix() + "File already exists.");
+			LOGGER.info(LOG_PREFIX + "File already exists.");
 		}
 
 		return new Pair<>(file, YamlConfiguration.loadConfiguration(file));

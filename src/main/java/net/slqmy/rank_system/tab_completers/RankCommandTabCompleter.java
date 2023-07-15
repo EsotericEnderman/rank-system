@@ -25,13 +25,13 @@ public final class RankCommandTabCompleter implements TabCompleter {
 		final List<String> results = new ArrayList<>();
 
 		if (sender instanceof Player && sender.isOp()) {
-			if (args.length == 1) {
+			if (args.length == RankManager.getPlayerInputArgumentNumber()) {
 				for (final OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 					results.add(player.getName());
 				}
 
 				return StringUtil.copyPartialMatches(args[0], results, new ArrayList<>());
-			} else if (args.length == 2) {
+			} else if (args.length == RankManager.getRankInputArgumentNumber()) {
 				for (final Rank rank : rankManager.getRanksList()) {
 					results.add(rank.getName());
 				}

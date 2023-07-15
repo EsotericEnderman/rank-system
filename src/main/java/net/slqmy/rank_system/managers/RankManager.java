@@ -13,17 +13,30 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class RankManager {
+	private static final Logger LOGGER = Main.getPluginLogger();
+
+	private static final int PLAYER_INPUT_ARGUMENT_NUMBER = 1;
+	private static final int RANK_INPUT_ARGUMENT_NUMBER = 2;
+	private static final int RANK_COMMAND_ARGUMENT_LENGTH = 2;
+
 	private final Main plugin;
 	private final YamlConfiguration config;
 	private final YamlConfiguration playerRanks;
-	private final HashMap<UUID, PermissionAttachment> permissions = new HashMap<>();
-	public HashMap<UUID, PermissionAttachment> getPermissions() { return permissions; }
+	private final Map<UUID, PermissionAttachment> permissions = new HashMap<>();
+
+	private final String logPrefix = Utility.getLogPrefix();
 
 	public RankManager(final Main plugin) {
 		this.plugin = plugin;
 		this.config = (YamlConfiguration) plugin.getConfig();
 		this.playerRanks = plugin.getPlayerRanks();
 	}
+
+	public static int getPlayerInputArgumentNumber() { return PLAYER_INPUT_ARGUMENT_NUMBER; }
+	public static int getRankInputArgumentNumber() { return RANK_INPUT_ARGUMENT_NUMBER; }
+	public static int getRankCommandArgumentLength() { return RANK_COMMAND_ARGUMENT_LENGTH; }
+
+	public Map<UUID, PermissionAttachment> getPermissions() { return permissions;	}
 
 	public boolean setRank(final UUID uuid, final String rankName, final boolean isFirstJoin) {
 		final Rank targetRank = getRank(rankName);
@@ -67,10 +80,8 @@ public class RankManager {
 		try {
 			playerRanks.save(plugin.getPlayerRanksFile());
 		} catch (final IOException exception) {
-			Logger logger = Logger.getLogger("Minecraft");
-
-			logger.info(Utility.getLogPrefix() + "Error while saving rank " + targetRankName + " to player with UUID " + uuid + "!");
-			logger.info(Utility.getLogPrefix() + exception.getMessage());
+			LOGGER.info(logPrefix + "Error while saving rank " + targetRankName + " to player with UUID " + uuid + "!");
+			LOGGER.info(logPrefix + exception.getMessage());
 
 			exception.printStackTrace();
 		}
@@ -94,10 +105,22 @@ public class RankManager {
 		String playerRankName = playerRanks.getString(uuid.toString());
 
 		if (playerRankName == null) {
-			return getDefaultRank();
+			Rank defaultRank = getDefaultRank();
+
+			if (defaultRank == null) {
+				return Rank.nullRank;
+			} else {
+				return getDefaultRank();
+			}
 		}
 
-		return getRank(playerRankName);
+		Rank playerRank = getRank(playerRankName);
+
+		if (playerRank == null) {
+			return Rank.nullRank;
+		}
+
+		return playerRank;
 	}
 
 	public Rank getRank(final String rankName) {

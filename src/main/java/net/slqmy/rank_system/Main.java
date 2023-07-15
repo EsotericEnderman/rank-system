@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
+
 	/*
 	 /rank command. /rank <player> <rank name>
 	 Name tags & chat display.
@@ -26,16 +27,18 @@ public final class Main extends JavaPlugin {
 	 Custom permissions.
 	*/
 
+	private static final Logger LOGGER = Logger.getLogger("Minecraft");
+
 	private RankManager rankManager;
-	public RankManager getRankManager() { return rankManager; }
-
 	private NameTagManager nameTagManager;
-	public NameTagManager getNameTagManager() { return nameTagManager; }
-
 	private File playerRanksFile;
-	public File getPlayerRanksFile() { return playerRanksFile; }
-
 	private YamlConfiguration playerRanks;
+
+	public static Logger getPluginLogger() { return LOGGER; }
+
+	public RankManager getRankManager() { return rankManager; }
+	public NameTagManager getNameTagManager() { return nameTagManager; }
+	public File getPlayerRanksFile() { return playerRanksFile; }
 	public YamlConfiguration getPlayerRanks() { return playerRanks; }
 
 	@Override
@@ -43,16 +46,17 @@ public final class Main extends JavaPlugin {
 		// Plugin startup logic.
 		// Make sure the plugin folder exists.
 		final File dataFolder = getDataFolder();
-
-		final Logger logger = Logger.getLogger("Minecraft");
+		final String LOG_PREFIX = Utility.getLogPrefix();
 
 		if (!dataFolder.exists()) {
 			final boolean creationSuccessful = dataFolder.mkdir();
 
 			if (!creationSuccessful) {
-				logger.info(Utility.getLogPrefix() + "Failed to create plugin directory! Cancelling plugin startup.");
-				logger.info(Utility.getLogPrefix() + "The plugin needs access to the data folder to function properly.");
-				logger.info(Utility.getLogPrefix() + "Make sure the server has the required permissions to create files and folders.");
+				final String message = LOG_PREFIX + "Failed to create plugin directory! Cancelling plugin startup.\n"
+					+ LOG_PREFIX + "The plugin needs access to the data folder to function properly.\n"
+					+ LOG_PREFIX + "Make sure the server has the needed permissions to modify files.";
+
+				LOGGER.info(message);
 
 				return;
 			}
@@ -70,8 +74,8 @@ public final class Main extends JavaPlugin {
 		try {
 			playerRanksTuple = Utility.initiateYAMLFile("player-ranks", this);
 		} catch (final IOException exception) {
-			logger.info(Utility.getLogPrefix() + "Error while creating file 'player-ranks.yml'! Cancelling plugin startup.");
-			logger.info(Utility.getLogPrefix() + exception.getMessage());
+			LOGGER.info(LOG_PREFIX + "Error while creating file 'player-ranks.yml'! Cancelling plugin startup.");
+			LOGGER.info(LOG_PREFIX + exception.getMessage());
 
 			exception.printStackTrace();
 			return;
@@ -92,8 +96,10 @@ public final class Main extends JavaPlugin {
 			final	String rankName = rank.getName();
 
 			if (rankNames.contains(rankName)) {
-				logger.info(Utility.getLogPrefix() + "Invalid configuration! Duplicate rank entry for rank '" + rankName + "'!");
-				logger.info(Utility.getLogPrefix() + "Cancelling plugin startup.");
+				final String message = LOG_PREFIX + "Invalid configuration! Duplicate rank entry for rank '" + rankName + "'!\n"
+						+ LOG_PREFIX + "Cancelling plugin startup.";
+
+				LOGGER.info(message);
 				return;
 			}
 

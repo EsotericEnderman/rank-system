@@ -5,11 +5,11 @@
 # defaultRank: guest
 defaultRank:
 
-# Here you can add ranks. A typical configuration may look like this:
+# Here you can add ranks. A typical configuration may look like this: (see below)
 # Keep in mind, rank names have to be unique, but rank display names can be different.
 # Want to sort ranks? You can add a letter corresponding to the ranks position, as by default, they are sorted alphabetically.
 # For example: aowner, badmin, cmember, dguest.
-# Don't worry about the names being ugly, they aren't displayed anywhere other than in the command autocomplete.
+# Don't worry about the names being ugly, they aren't displayed anywhere other than in the command autocomplete, which normal players don't have access to.
 #ranks:
 #  - name: aowner
 #    # Names that will be displayed as prefixes in chat and in the tab-list.

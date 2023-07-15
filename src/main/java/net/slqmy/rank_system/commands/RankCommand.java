@@ -20,7 +20,12 @@ import java.util.logging.Logger;
 public final class RankCommand implements CommandExecutor {
 	// rank <player> <rank name>
 
+	private static final Logger LOGGER = Main.getPluginLogger();
+
 	private final RankManager rankManager;
+
+	private final String chatPrefix = Utility.getChatPrefix();
+	private final String logPrefix = Utility.getLogPrefix();
 
 	public RankCommand(final Main plugin) { this.rankManager = plugin.getRankManager(); }
 
@@ -30,66 +35,68 @@ public final class RankCommand implements CommandExecutor {
 			final Player player = (Player) sender;
 
 			if (player.isOp()) {
-				if (args.length != 2) {
+				if (args.length != RankManager.getRankCommandArgumentLength()) {
 					return false;
 				} else {
 					final String targetName = args[0];
 
 					final OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-					final UUID targetUUID = target.getUniqueId();
-					final OfflinePlayer realTarget = Bukkit.getOfflinePlayer(targetUUID);
 
-					if (realTarget != null) {
+					if (target.getName() != null) {
 						final String rankName = args[1];
 						final Rank rank = rankManager.getRank(rankName);
-						final UUID realTargetUUID = realTarget.getUniqueId();
-						final boolean success =	rankManager.setRank(realTargetUUID, rankName, false);
+						final UUID targetUUID = target.getUniqueId();
+						final boolean success =	rankManager.setRank(targetUUID, rankName, false);
 
 						if (success) {
 							String rankDisplayName = rank.getDisplayName();
 
-							if (player.getUniqueId() == realTargetUUID) {
-								player.sendMessage(Utility.getChatPrefix() + ChatColor.GREEN + "Successfully set your rank to " + rankDisplayName + ChatColor.GREEN + "!");
+							if (player.getUniqueId() == targetUUID) {
+								player.sendMessage(chatPrefix + ChatColor.GREEN + "Successfully set your rank to " + rankDisplayName + ChatColor.GREEN + "!");
 							} else {
-								player.sendMessage(Utility.getChatPrefix() + ChatColor.GREEN + "Successfully set " + ChatColor.BOLD + realTarget.getName() + ChatColor.RESET + ChatColor.GREEN + "'s rank to " + rankDisplayName + ChatColor.GREEN + "!");
+								player.sendMessage(chatPrefix + ChatColor.GREEN + "Successfully set " + ChatColor.BOLD + target.getName() + ChatColor.RESET + ChatColor.GREEN + "'s rank to " + ChatColor.RESET + rankDisplayName + ChatColor.GREEN + "!");
 
 								if (target.isOnline()) {
-									((Player) realTarget).sendMessage(Utility.getChatPrefix() + ChatColor.GREEN + "Your rank has been set to " + rankDisplayName + ChatColor.GREEN + "!");
+									((Player) target).sendMessage(chatPrefix + ChatColor.GREEN + "Your rank has been set to " + rankDisplayName + ChatColor.GREEN + "!");
 								}
 							}
 						} else {
-							player.sendMessage(Utility.getChatPrefix() + ChatColor.RED + "That rank does not exist in the configuration file!");
+							player.sendMessage(chatPrefix + ChatColor.RED + "That rank does not exist in the configuration file!");
 						}
 					} else {
-						player.sendMessage(Utility.getChatPrefix() + ChatColor.RED + "That player does not exist!");
+						player.sendMessage(chatPrefix + ChatColor.RED + "That player does not exist!");
 					}
 				}
 			} else {
-				player.sendMessage(Utility.getChatPrefix() + ChatColor.RED + "You must be op to execute this command!");
+				player.sendMessage(chatPrefix + ChatColor.RED + "You must be op to execute this command!");
 			}
 		} else if (sender instanceof ConsoleCommandSender) {
-			Logger logger = Logger.getLogger("Minecraft");
+			if (args.length != RankManager.getRankCommandArgumentLength()) {
+				final String message = logPrefix + "Incorrect command usage! Please use /rank <player> <rank name>";
 
-			if (args.length != 2) {
-				logger.info(Utility.getLogPrefix() + "Incorrect command usage! Please use /rank <player> <rank name>");
+				LOGGER.info(message);
 			} else {
 				final String targetName = args[0];
 
 				final OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-				final UUID targetUUID = target.getUniqueId();
-				final OfflinePlayer realTarget = Bukkit.getOfflinePlayer(targetUUID);
 
-				if (realTarget != null) {
+				if (target.getName() != null) {
 					final String rank = args[1];
 					boolean success =	rankManager.setRank(target.getUniqueId(), rank, false);
 
 					if (success) {
-						logger.info(Utility.getLogPrefix() + "Successfully set " + target.getName() + "'s rank to " + rank + "!");
+						final String message = logPrefix + "Successfully set " + target.getName() + "'s rank to " + rank + "!";
+
+						LOGGER.info(message);
 					} else {
-						logger.info(Utility.getLogPrefix() + "That rank does not exist in the configuration file!");
+						final String message = logPrefix + "That rank does not exist in the configuration file!";
+
+						LOGGER.info(message);
 					}
 				} else {
-					logger.info(Utility.getLogPrefix() + "That player does not exist!");
+					final String message = logPrefix + "That player does not exist!";
+
+					LOGGER.info(message);
 				}
 			}
 		}

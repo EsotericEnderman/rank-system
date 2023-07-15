@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -23,7 +23,7 @@ public final class EventListener implements Listener {
 	private final YamlConfiguration config;
 	private final RankManager rankManager;
 	private final NameTagManager nameTagManager;
-	private final HashMap<UUID, PermissionAttachment> permissions;
+	private final Map<UUID,PermissionAttachment> permissions;
 
 	EventListener(final Main plugin) {
 		this.plugin = plugin;

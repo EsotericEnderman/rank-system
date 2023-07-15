@@ -13,11 +13,11 @@ import java.util.UUID;
 
 public final class NameTagManager {
 	private final RankManager rankManager;
+	private final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 
 	public NameTagManager(final Main plugin) { rankManager = plugin.getRankManager(); }
 
 	public void setNameTags(final Player player) {
-		final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 		assert scoreboardManager != null;
 
 		final Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
@@ -39,11 +39,12 @@ public final class NameTagManager {
 		for (final Player target : Bukkit.getOnlinePlayers()) {
 			UUID targetUUID = target.getUniqueId();
 
-			if (targetUUID != playerUUID) {
+			if (targetUUID.equals(playerUUID)) {
 				final Team targetRankTeam = scoreboard.getTeam(rankManager.getPlayerRank(targetUUID).getName());
-				assert targetRankTeam != null;
 
-				targetRankTeam.addEntry(target.getName());
+				if (targetRankTeam != null) {
+					targetRankTeam.addEntry(target.getName());
+				}
 			}
 		}
 	}
@@ -56,9 +57,10 @@ public final class NameTagManager {
 		// Add a player to everyone's scoreboard.
 		for (final Player target : Bukkit.getOnlinePlayers()) {
 			final Team targetRankTeam = target.getScoreboard().getTeam(rankName);
-			assert targetRankTeam != null;
 
-			targetRankTeam.addEntry(playerName);
+			if (targetRankTeam != null) {
+				targetRankTeam.addEntry(playerName);
+			}
 		}
 	}
 
@@ -68,9 +70,10 @@ public final class NameTagManager {
 
 		for (final Player target : Bukkit.getOnlinePlayers()) {
 			final Team playerTeam = target.getScoreboard().getEntryTeam(playerName);
-			assert playerTeam != null;
 
-			playerTeam.removeEntry(playerName);
+			if (playerTeam != null) {
+				playerTeam.removeEntry(playerName);
+			}
 		}
 	}
 }
