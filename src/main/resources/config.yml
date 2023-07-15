@@ -7,18 +7,21 @@ defaultRank:
 
 # Here you can add ranks. A typical configuration may look like this:
 # Keep in mind, rank names have to be unique, but rank display names can be different.
+# Want to sort ranks? You can add a letter corresponding to the ranks position, as by default, they are sorted alphabetically.
+# For example: aowner, badmin, cmember, dguest.
+# Don't worry about the names being ugly, they aren't displayed anywhere other than in the command autocomplete.
 #ranks:
-#  - name: owner
+#  - name: aowner
 #    # Names that will be displayed as prefixes in chat and in the tab-list.
 #    displayName: "&4&lOwner" # Dark red and bold.
 #    permissions:
 #      - worldedit.help
-#  - name: admin
+#  - name: badmin
 #    displayName: "&c&lAdmin" # Red and bold.
 #    permissions:
 #      - worldedit.help
-#  - name: member
+#  - name: cmember
 #    displayName: Member # White.
-#  - name: guest
+#  - name: dguest
 #    displayName: "&7Guest" # Grey.
 ranks:

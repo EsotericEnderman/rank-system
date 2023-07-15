@@ -2,6 +2,7 @@ package net.slqmy.rank_system;
 
 import net.slqmy.rank_system.managers.NameTagManager;
 import net.slqmy.rank_system.managers.RankManager;
+import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,15 +16,18 @@ import org.bukkit.permissions.PermissionAttachment;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public final class EventListener implements Listener {
 	private final Main plugin;
+	private final YamlConfiguration config;
 	private final RankManager rankManager;
 	private final NameTagManager nameTagManager;
 	private final HashMap<UUID, PermissionAttachment> permissions;
 
 	EventListener(final Main plugin) {
 		this.plugin = plugin;
+		this.config = (YamlConfiguration) plugin.getConfig();
 		this.rankManager = plugin.getRankManager();
 		this.nameTagManager = plugin.getNameTagManager();
 		this.permissions = rankManager.getPermissions();
@@ -31,7 +35,6 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		final YamlConfiguration config = (YamlConfiguration) plugin.getConfig();
 		final String defaultRank = config.getString("defaultRank");
 		final Player player = event.getPlayer();
 		final UUID playerUUID = player.getUniqueId();
@@ -41,11 +44,12 @@ public final class EventListener implements Listener {
 			final boolean success = rankManager.setRank(playerUUID, defaultRank, true);
 
 			if (!success) {
-				System.out.println("[Rank-System] Invalid configuration! Default rank does not exist in rank list.");
+				Logger.getLogger("Minecraft").info(Utility.getLogPrefix() + "Invalid configuration! Default rank does not exist in rank list.");
+				return;
 			}
 		}
 
-		// Give the player a scoreboard with nametags of other players.
+		// Give the player a scoreboard with name tags of other players.
 		nameTagManager.setNameTags(player);
 		// Add the player to everyone else's scoreboard.
 		nameTagManager.addNewNameTag(player);
@@ -60,7 +64,7 @@ public final class EventListener implements Listener {
 			permissions.put(playerUUID, attachment);
 		}
 
-		for (final String permission : rankManager.getRank(playerUUID).getPermissions()) {
+		for (final String permission : rankManager.getPlayerRank(playerUUID).getPermissions()) {
 			attachment.setPermission(permission, true);
 		}
 	}
@@ -83,6 +87,7 @@ public final class EventListener implements Listener {
 
 		final Player player = event.getPlayer();
 
-		Bukkit.broadcastMessage(rankManager.getRank(player.getUniqueId()).getDisplayName() + " " + player.getName() + ChatColor.BOLD +  " » " + ChatColor.GRAY + event.getMessage());
+		// Note: colour codes that represent colours actually reset the previous colour codes.
+		Bukkit.broadcastMessage(rankManager.getPlayerRank(player.getUniqueId()).getDisplayName() + " " + player.getName() +  " » " + ChatColor.GRAY + event.getMessage());
 	}
 }
