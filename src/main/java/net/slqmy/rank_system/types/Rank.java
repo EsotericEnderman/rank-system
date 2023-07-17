@@ -9,15 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 public final class Rank {
+	private static final Rank NULL_RANK = new Rank("", "", new ArrayList<>());
 	private static final String PERMISSIONS_KEY = "permissions";
-
-	private static final Rank nullRank = new Rank("", "", new ArrayList<>());
 
 	private final String name;
 	private final String displayName;
 	private List<String> permissions;
 
-	public Rank(final String name, final String displayName, final List<String> permissions) {
+	public Rank(@NotNull final String name, @NotNull final String displayName, final List<@NotNull String> permissions) {
 		this.name = name;
 		this.displayName = displayName;
 
@@ -27,27 +26,11 @@ public final class Rank {
 	}
 
 	public static Rank getNullRank() {
-		return nullRank;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public @NotNull String getDisplayName() {
-		return ChatColor.translateAlternateColorCodes('&', displayName) + ChatColor.RESET;
-	}
-
-	public List<String> getPermissions() {
-		if (permissions != null) {
-			return permissions;
-		} else {
-			return new ArrayList<>();
-		}
+		return NULL_RANK;
 	}
 
 	@Contract("_ -> new")
-	public static @NotNull Rank from(final @NotNull Map<String, Object> rank) {
+	public static @NotNull Rank from(final @NotNull Map<@NotNull String, Object> rank) {
 		// Check for invalid input.
 		if (!rank.containsKey("name") || !rank.containsKey("display-name")) {
 			throw new IllegalArgumentException("Object must have properties 'name' & 'display-name'!");
@@ -59,5 +42,21 @@ public final class Rank {
 
 		return new Rank((String) rank.get("name"), (String) rank.get("display-name"),
 				(List<String>) rank.get(PERMISSIONS_KEY));
+	}
+
+	public @NotNull String getName() {
+		return name;
+	}
+
+	public @NotNull String getDisplayName() {
+		return ChatColor.RESET + ChatColor.translateAlternateColorCodes('&', displayName) + ChatColor.RESET;
+	}
+
+	public @NotNull List<@NotNull String> getPermissions() {
+		if (permissions != null) {
+			return permissions;
+		} else {
+			return new ArrayList<>();
+		}
 	}
 }

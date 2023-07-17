@@ -1,27 +1,27 @@
 # Here you can specify a default rank.
 # Simply add the name of the rank.
-# If specified, players will be given this rank when they first join the server.
+# If specified, players will be given this rank if they don't have a rank explicitly assigned to them.
 # For example:
 # default-rank: guest
 default-rank:
 
-# Here you can add ranks. A typical configuration may look like this: (see below)
-# Keep in mind, rank names have to be unique, but rank display names can be different.
-# Want to sort ranks? You can add a letter corresponding to the ranks position, as by default, they are sorted alphabetically.
-# For example: aowner, badmin, cmember, dguest.
-# Don't worry about the names being ugly, they aren't displayed anywhere other than in the command autocomplete, which normal players don't have access to.
+# Here you can add ranks.
+# Keep in mind, rank names have to be unique, but rank display names can be the same.
+# Rank names aren't shown anywhere other than in command tab-complete, which non-operators can't see.
+# Ranks are sorted in the tab list based on their order in this list.
+# A typical configuration may look like this:
 #ranks:
-#  - name: aowner
+#  - name: owner
 #    # Names that will be displayed as prefixes in chat and in the tab-list.
 #    display-name: "&4&lOwner" # Dark red and bold.
 #    permissions:
 #      - worldedit.help
-#  - name: badmin
+#  - name: admin
 #    display-name: "&c&lAdmin" # Red and bold.
 #    permissions:
 #      - worldedit.help
-#  - name: cmember
-#    display-name: Member # White.
-#  - name: dguest
+#  - name: member
+#    display-name: &lMember # White and bold.
+#  - name: guest
 #    display-name: "&7Guest" # Grey.
 ranks:

@@ -1,8 +1,9 @@
 package net.slqmy.rank_system.events;
 
-import net.slqmy.rank_system.Main;
-import net.slqmy.rank_system.managers.NameTags;
-import net.slqmy.rank_system.managers.Ranks;
+import net.slqmy.rank_system.RankSystem;
+import net.slqmy.rank_system.managers.NameTagManager;
+import net.slqmy.rank_system.managers.RankManager;
+import net.slqmy.rank_system.types.Rank;
 import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,23 +19,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public final class EventListener implements Listener {
-	private static final Logger LOGGER = Main.getPluginLogger();
-
-	private final Main plugin;
+	private final RankSystem plugin;
 	private final YamlConfiguration config;
-	private final Ranks ranks;
-	private final NameTags nameTags;
+	private final RankManager rankManager;
+	private final NameTagManager nameTagManager;
 	private final Map<UUID, PermissionAttachment> permissions;
 
-	public EventListener(final @NotNull Main plugin) {
+	public EventListener(final @NotNull RankSystem plugin) {
 		this.plugin = plugin;
 		this.config = (YamlConfiguration) plugin.getConfig();
-		this.ranks = plugin.getRankManager();
-		this.nameTags = plugin.getNameTagManager();
-		this.permissions = ranks.getPermissions();
+		this.rankManager = plugin.getRankManager();
+		this.nameTagManager = plugin.getNameTagManager();
+		this.permissions = rankManager.getPermissions();
 	}
 
 	@EventHandler
@@ -44,19 +42,20 @@ public final class EventListener implements Listener {
 		final UUID playerUUID = player.getUniqueId();
 
 		// Attempt to assign the player the default rank, if it exists.
-		if (defaultRank != null && !player.hasPlayedBefore()) {
-			final boolean success = ranks.setRank(playerUUID, defaultRank, true);
+		if (defaultRank != null && rankManager.getPlayerRank(playerUUID, false) == Rank.getNullRank()) {
+			final boolean success = rankManager.setRank(playerUUID, defaultRank, true);
 
 			if (!success) {
-				LOGGER.info(Utility.getLogPrefix() + "Invalid configuration! Default rank does not exist in rank list.");
+				Utility.log("Invalid configuration! Default rank does not exist in rank list.");
+
 				return;
 			}
 		}
 
 		// Give the player a scoreboard with name tags of other players.
-		nameTags.setNameTags(player);
+		nameTagManager.setNameTags(player);
 		// Add the player to everyone else's scoreboard.
-		nameTags.addNewNameTag(player);
+		nameTagManager.addNewNameTag(player);
 
 		// Add permissions to the player.
 		final PermissionAttachment attachment;
@@ -68,7 +67,7 @@ public final class EventListener implements Listener {
 			permissions.put(playerUUID, attachment);
 		}
 
-		for (final String permission : ranks.getPlayerRank(playerUUID).getPermissions()) {
+		for (final String permission : rankManager.getPlayerRank(playerUUID, false).getPermissions()) {
 			attachment.setPermission(permission, true);
 		}
 	}
@@ -79,7 +78,7 @@ public final class EventListener implements Listener {
 		final UUID playerUUID = player.getUniqueId();
 
 		// Remove player from other player's scoreboard and from the hashmap.
-		nameTags.removeNameTag(player);
+		nameTagManager.removeNameTag(player);
 		permissions.remove(playerUUID, permissions.get(playerUUID));
 	}
 
@@ -91,9 +90,15 @@ public final class EventListener implements Listener {
 
 		final Player player = event.getPlayer();
 
+		final String rankDisplayName = rankManager.getPlayerRank(player.getUniqueId(), false).getDisplayName();
+
 		// Note: colour codes that represent colours actually reset the previous colour
 		// codes.
-		Bukkit.broadcastMessage(ranks.getPlayerRank(player.getUniqueId()).getDisplayName() + " " + player.getName()
-				+ " » " + ChatColor.GRAY + event.getMessage());
+
+		// (If the display name is blank)
+		Bukkit.broadcastMessage(
+				(rankDisplayName.equals(ChatColor.RESET.toString() + ChatColor.RESET) ? "" : rankDisplayName + " ")
+						+ player.getName()
+						+ " » " + ChatColor.GRAY + event.getMessage());
 	}
 }

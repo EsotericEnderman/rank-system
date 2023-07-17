@@ -1,14 +1,12 @@
 name: Rank-System
 version: "${project.version}"
-main: net.slqmy.rank_system.Main
+main: net.slqmy.rank_system.RankSystem
 api-version: "1.20"
 prefix: Rank-System
 authors: [slqmy]
-description: A simple rank system project.
+description: A simple rank system project. Saves ranks to a yml file, supports prefixes and permissions as well as chat and tab list prefixes. Tab list players are sorted based on their rank.
 commands:
   rank:
     usage: (op player or console only) /(rank | role) <player> <rank name>
-    description: View and manipulate data related to the rank system!
+    description: Change a player's rank.
     aliases: [role]
-    permission: rank_system.rank
-    permission-message: You don't have the required rank_system.rank permission to execute this command!

@@ -1,6 +1,6 @@
 package net.slqmy.rank_system.managers;
 
-import net.slqmy.rank_system.Main;
+import net.slqmy.rank_system.RankSystem;
 import net.slqmy.rank_system.types.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,38 +12,40 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-public final class NameTags {
-	private final Ranks ranks;
+public final class NameTagManager {
+	private final RankManager rankManager;
 	private final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 
-	public NameTags(final @NotNull Main plugin) {
-		ranks = plugin.getRankManager();
+	public NameTagManager(final @NotNull RankSystem plugin) {
+		rankManager = plugin.getRankManager();
 	}
 
 	public void setNameTags(final @NotNull Player player) {
 		assert scoreboardManager != null;
 
 		final Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
-		// Assign the player a new scoreboard.
+		// Give the player a new scoreboard.
 		player.setScoreboard(scoreboard);
 
 		// Create teams for every rank with the rank prefix as the prefix for the team.
-		final List<Rank> ranksList = this.ranks.getRanksList();
+		final List<Rank> ranksList = rankManager.getRanksList(true);
 
 		for (final Rank rank : ranksList) {
 			final Team team = scoreboard.registerNewTeam(rank.getName());
 			team.setPrefix(rank.getDisplayName() + " ");
 		}
 
-		UUID playerUUID = player.getUniqueId();
+		final UUID playerUUID = player.getUniqueId();
 
 		// Add every OTHER player (the current player is managed with the addNewNameTag
 		// method) to the player's scoreboard.
 		for (final Player target : Bukkit.getOnlinePlayers()) {
-			UUID targetUUID = target.getUniqueId();
+			final UUID targetUUID = target.getUniqueId();
 
-			if (targetUUID.equals(playerUUID)) {
-				final Team targetRankTeam = scoreboard.getTeam(this.ranks.getPlayerRank(targetUUID).getName());
+			if (!targetUUID.equals(playerUUID)) {
+				final Rank targetRank = rankManager.getPlayerRank(targetUUID, true);
+
+				final Team targetRankTeam = scoreboard.getTeam(targetRank.getName());
 
 				if (targetRankTeam != null) {
 					targetRankTeam.addEntry(target.getName());
@@ -53,11 +55,12 @@ public final class NameTags {
 	}
 
 	public void addNewNameTag(final @NotNull Player player) {
-		final String playerName = player.getName();
-		final Rank playerRank = ranks.getPlayerRank(player.getUniqueId());
-		final String rankName = playerRank.getName();
+		final Rank playerRank = rankManager.getPlayerRank(player.getUniqueId(), true);
 
-		// Add a player to everyone's scoreboard.
+		final String rankName = playerRank.getName();
+		final String playerName = player.getName();
+
+		// Add the player to everyone's scoreboard.
 		for (final Player target : Bukkit.getOnlinePlayers()) {
 			final Team targetRankTeam = target.getScoreboard().getTeam(rankName);
 
