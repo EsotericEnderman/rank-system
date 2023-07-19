@@ -25,22 +25,22 @@ public final class Utility {
 	public static @Nullable Pair<@NotNull File, @NotNull YamlConfiguration> initiateYAMLFile(@NotNull String name,
 			final @NotNull RankSystem plugin)
 			throws IOException {
-		File pluginDataFolder = plugin.getDataFolder();
+		final File pluginDataFolder = plugin.getDataFolder();
 		name += ".yml";
 
 		log("Attempting to create file '" + name + "'...");
 
-		Matcher matcher = DIRECTORY_PATTERN.matcher(name);
+		final Matcher matcher = DIRECTORY_PATTERN.matcher(name);
 
 		if (matcher.find()) {
-			String directoryPath = matcher.group(0);
+			final String directoryPath = matcher.group(0);
 
 			log("Attempting to create directory '" + directoryPath + "'...");
 
-			File directory = new File(pluginDataFolder, directoryPath);
+			final File directory = new File(pluginDataFolder, directoryPath);
 
 			if (!directory.exists()) {
-				boolean success = directory.mkdirs();
+				final boolean success = directory.mkdirs();
 
 				if (success) {
 					log("Successfully created directory.");
@@ -68,20 +68,20 @@ public final class Utility {
 		return new Pair<>(file, YamlConfiguration.loadConfiguration(file));
 	}
 
-	public static void sendMessage(@NotNull Player player, @NotNull String message) {
+	public static void sendMessage(@NotNull final Player player, @NotNull final String message) {
 		player.sendMessage(CHAT_PREFIX + " " + message);
 	}
 
-	public static void log(@NotNull String message) {
-		message = clearFormatting(LOG_PREFIX + " " + message);
+	public static void log(@Nullable final Object message) {
+		final String messageString = clearFormatting(LOG_PREFIX + " " + (message == null ? "NULL" : message.toString()));
 
-		LOGGER.info(message);
+		LOGGER.info(messageString);
 	}
 
 	@NotNull
 	public static String replaceAll(@NotNull final String input, @NotNull final Pattern pattern,
 			@NotNull final String replaceString) {
-		Matcher matcher = pattern.matcher(input);
+		final Matcher matcher = pattern.matcher(input);
 		return matcher.replaceAll(replaceString);
 	}
 
