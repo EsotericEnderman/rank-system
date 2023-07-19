@@ -1,6 +1,7 @@
 package net.slqmy.rank_system.commands;
 
 import net.slqmy.rank_system.RankSystem;
+import net.slqmy.rank_system.events.custom_events.RankChangeEvent;
 import net.slqmy.rank_system.managers.RankManager;
 import net.slqmy.rank_system.types.Rank;
 import net.slqmy.rank_system.utility.Utility;
@@ -13,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +24,8 @@ import java.util.UUID;
 
 public final class RankCommand implements CommandExecutor, TabCompleter {
 	// rank <player> <rank name>
+	private static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
+
 	private final RankManager rankManager;
 
 	public RankCommand(final @NotNull RankSystem plugin) {
@@ -76,10 +80,16 @@ public final class RankCommand implements CommandExecutor, TabCompleter {
 					Utility.sendMessage(player,
 							ChatColor.RED + "Your rank is already set to " + rankDisplayName + ChatColor.GREEN + "!");
 				} else {
-					rankManager.setRank(targetUUID, rankName, false);
+					final RankChangeEvent event = new RankChangeEvent(target, previousRank, rank);
 
-					Utility.sendMessage(player, ChatColor.GREEN + "Successfully set your rank to " + rankDisplayName
-							+ ChatColor.GREEN + "!");
+					PLUGIN_MANAGER.callEvent(event);
+
+					if (!event.isCancelled()) {
+						rankManager.setRank(targetUUID, rankName, false);
+
+						Utility.sendMessage((Player) target, ChatColor.GREEN + "Successfully set your rank to " + rankDisplayName
+								+ ChatColor.GREEN + "!");
+					}
 				}
 			} else {
 				final String previousDisplayName = previousRank.getDisplayName();
@@ -90,17 +100,23 @@ public final class RankCommand implements CommandExecutor, TabCompleter {
 							previousRankDisplay + ChatColor.BOLD + correctTargetName + ChatColor.RED + "'s rank is already set to "
 									+ rankDisplayName + ChatColor.RED + "!");
 				} else {
-					rankManager.setRank(targetUUID, rankName, false);
+					final RankChangeEvent event = new RankChangeEvent(target, previousRank, rank);
 
-					Utility.sendMessage(player,
-							ChatColor.GREEN + "Successfully set " + previousRankDisplay
-									+ ChatColor.BOLD
-									+ correctTargetName + ChatColor.GREEN + "'s rank to "
-									+ rankDisplayName + ChatColor.GREEN + "!");
+					PLUGIN_MANAGER.callEvent(event);
 
-					if (target.isOnline()) {
-						Utility.sendMessage((Player) target, ChatColor.GREEN + "Your rank has been set to "
-								+ rankDisplayName + "!");
+					if (!event.isCancelled()) {
+						rankManager.setRank(targetUUID, rankName, false);
+
+						Utility.sendMessage(player,
+								ChatColor.GREEN + "Successfully set " + previousRankDisplay
+										+ ChatColor.BOLD
+										+ correctTargetName + ChatColor.GREEN + "'s rank to "
+										+ rankDisplayName + ChatColor.GREEN + "!");
+
+						if (target.isOnline()) {
+							Utility.sendMessage((Player) target, ChatColor.GREEN + "Your rank has been set to "
+									+ rankDisplayName + "!");
+						}
 					}
 				}
 			}
@@ -139,15 +155,21 @@ public final class RankCommand implements CommandExecutor, TabCompleter {
 				Utility.log(previousRankDisplay + correctTargetName + "'s rank is already set to "
 						+ rankDisplayName + "!");
 			} else {
-				rankManager.setRank(targetUUID, rankName, false);
+				final RankChangeEvent event = new RankChangeEvent(target, previousRank, rank);
 
-				Utility.log("Successfully set " + previousRankDisplay
-						+ correctTargetName + "'s rank to "
-						+ rankDisplayName + "!");
+				PLUGIN_MANAGER.callEvent(event);
 
-				if (target.isOnline()) {
-					Utility.sendMessage((Player) target, ChatColor.GREEN + "Your rank has been set to "
-							+ rankDisplayName + ChatColor.GREEN + "!");
+				if (!event.isCancelled()) {
+					rankManager.setRank(targetUUID, rankName, false);
+
+					Utility.log("Successfully set " + previousRankDisplay
+							+ correctTargetName + "'s rank to "
+							+ rankDisplayName + "!");
+
+					if (target.isOnline()) {
+						Utility.sendMessage((Player) target, ChatColor.GREEN + "Your rank has been set to "
+								+ rankDisplayName + ChatColor.GREEN + "!");
+					}
 				}
 			}
 		}
