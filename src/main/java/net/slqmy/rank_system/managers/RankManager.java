@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,6 +145,7 @@ public final class RankManager {
 		return playerRank;
 	}
 
+	@Nullable
 	public Rank getRank(final String rankName, boolean includePrefixes) {
 		final List<Rank> ranks = getRanksList(includePrefixes);
 
