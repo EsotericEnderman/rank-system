@@ -1,7 +1,9 @@
 package net.slqmy.rank_system;
 
 import net.slqmy.rank_system.commands.RankCommand;
-import net.slqmy.rank_system.events.EventListener;
+import net.slqmy.rank_system.events.listeners.AsyncPlayerChatEventListener;
+import net.slqmy.rank_system.events.listeners.PlayerJoinEventListener;
+import net.slqmy.rank_system.events.listeners.PlayerQuitEventListener;
 import net.slqmy.rank_system.managers.NameTagManager;
 import net.slqmy.rank_system.managers.RankManager;
 import net.slqmy.rank_system.types.Rank;
@@ -12,6 +14,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -27,6 +30,8 @@ public final class RankSystem extends JavaPlugin {
 	 * Save in .yml file.
 	 * Custom permissions.
 	 */
+
+	private static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
 	private RankManager rankManager;
 	private NameTagManager nameTagManager;
@@ -87,8 +92,8 @@ public final class RankSystem extends JavaPlugin {
 		} catch (final IOException exception) {
 			Utility.log("Error creating file 'player-ranks.yml'! Cancelled plugin startup.");
 			Utility.log(exception.getMessage());
-
 			exception.printStackTrace();
+			Utility.log(exception);
 			return;
 		}
 
@@ -96,8 +101,7 @@ public final class RankSystem extends JavaPlugin {
 		playerRanksConfig = playerRanksTuple.second;
 
 		// The rankManager class needs playerRanks to be assigned first, or else an
-		// error will
-		// occur.
+		// error will occur.
 		rankManager = new RankManager(this);
 
 		// Check for duplicate rank names.
@@ -136,7 +140,9 @@ public final class RankSystem extends JavaPlugin {
 		rank.setExecutor(new RankCommand(this));
 		rank.setTabCompleter(new RankCommand(this));
 
-		Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
+		PLUGIN_MANAGER.registerEvents(new AsyncPlayerChatEventListener(this), this);
+		PLUGIN_MANAGER.registerEvents(new PlayerJoinEventListener(this), this);
+		PLUGIN_MANAGER.registerEvents(new PlayerQuitEventListener(this), this);
 
 		for (final Player player : Bukkit.getOnlinePlayers()) {
 			nameTagManager.setNameTags(player);
