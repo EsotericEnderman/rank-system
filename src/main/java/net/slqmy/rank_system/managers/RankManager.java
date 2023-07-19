@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class RankManager {
+public final class RankManager {
 	private static final Rank NULL_RANK = Rank.getNullRank();
 	private static final Pattern PREFIX_PATTERN = Pattern.compile("^[a-z]+_");
 
@@ -93,17 +93,19 @@ public class RankManager {
 
 		final String targetRankName = targetRank.getName();
 
+		final Rank defaultRank = getDefaultRank(false);
+
 		// If it's not the default rank, save the rank.
 		playerRanksConfig.set(uuid.toString(),
-				getDefaultRank(false).getName().equals(targetRankName) ? null : targetRankName);
+				defaultRank != null && defaultRank.getName().equals(targetRankName) ? null : targetRankName);
 
 		try {
 			playerRanksConfig.save(plugin.getPlayerRanksFile());
 		} catch (final IOException exception) {
 			Utility.log("Error while saving rank '" + targetRankName + "' to player with UUID " + uuid + "!");
 			Utility.log(exception.getMessage());
-
 			exception.printStackTrace();
+			Utility.log(exception);
 		}
 
 		// Give the player the rank's name prefix.
