@@ -19,12 +19,8 @@ public final class AsyncPlayerChatEventListener implements Listener {
 		this.rankManager = plugin.getRankManager();
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onAsyncPlayerChat(final @NotNull AsyncPlayerChatEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-
 		// Custom chat message:
 		// (rank formatting) <rank name> (white) <player> » (grey) <message>
 		event.setCancelled(true);
