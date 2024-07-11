@@ -168,6 +168,7 @@ public final class RankManager {
 	public @NotNull List<Rank> getRanksList(final boolean includePrefixes) {
 		final List<Rank> results = new ArrayList<>();
 
+		@SuppressWarnings("unchecked")
 		List<LinkedHashMap<String, Object>> ranks = (List<LinkedHashMap<String, Object>>) config.getList("ranks");
 
 		if (ranks == null) {

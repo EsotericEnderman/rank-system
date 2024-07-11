@@ -29,6 +29,7 @@ public final class Rank {
 		return NULL_RANK;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Contract("_ -> new")
 	public static @NotNull Rank from(final @NotNull Map<@NotNull String, Object> rank) {
 		// Check for invalid input.
