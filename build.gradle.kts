@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion
+
 plugins {
   java
   `java-library`
@@ -43,9 +45,13 @@ group = topLevelDomain + groupStringSeparator + mainProjectAuthor.lowercase() + 
 version = "1.0.0-SNAPSHOT"
 
 val javaVersion = 21
+val javaVersionEnumMember = JavaVersion.VERSION_21;
 val paperApiVersion = "1.21"
 
 java {
+  sourceCompatibility = javaVersionEnumMember
+  targetCompatibility = javaVersionEnumMember
+
   toolchain.languageVersion = JavaLanguageVersion.of(javaVersion)
 }
 
