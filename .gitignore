@@ -115,3 +115,5 @@ run/
 bin
 
 .gradle
+
+build
