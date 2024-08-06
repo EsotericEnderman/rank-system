@@ -2,7 +2,7 @@
 # Simply add the name of the rank.
 # If specified, players will be given this rank if they don't have a rank explicitly assigned to them.
 # For example:
-# default-rank: guest
+# default-rank: "guest"
 default-rank:
 
 # Here you can add ranks.
@@ -21,7 +21,7 @@ default-rank:
 #    permissions:
 #      - worldedit.help
 #  - name: member
-#    display-name: &lMember # White and bold.
+#    display-name: "&lMember" # White and bold.
 #  - name: guest
 #    display-name: "&7Guest" # Grey.
 ranks:
