@@ -43,8 +43,13 @@ val projectAuthors = listOfNotNull(mainProjectAuthor)
 
 val topLevelDomain = "net"
 
+val projectNameString = rootProject.name
+
 group = topLevelDomain + groupStringSeparator + mainProjectAuthor.lowercase() + groupStringSeparator + snakecase(rootProject.name)
 version = "1.0.0-SNAPSHOT"
+
+val projectGroupString = group.toString()
+val projectVersionString = version.toString()
 
 val javaVersion = 21
 val javaVersionEnumMember = JavaVersion.VERSION_21;
@@ -80,9 +85,24 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
 
-            groupId = project.group.toString()
-            artifactId = rootProject.name
-            version = project.version.toString()
+            groupId = projectGroupString
+            artifactId = projectNameString
+            version = projectVersionString
+
+            fun artifactPath(classifier: String): String {
+              return "$buildDir/libs/" + projectNameString + "-" + projectVersionString + "-" + classifier + ".jar"
+            }
+
+            val devAllClassifier = "dev-all"
+            val devClassifier = "dev"
+
+            artifact(artifactPath(devAllClassifier)) {
+                classifier = devAllClassifier
+            }
+
+            artifact(artifactPath(devClassifier)) {
+                classifier = devClassifier
+            }
         }
     }
 }
