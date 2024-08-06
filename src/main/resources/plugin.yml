@@ -1,9 +1,9 @@
-name: Rank-System
-version: "${project.version}"
-main: net.slqmy.rank_system.RankSystem
-api-version: "1.20"
-prefix: Rank System
-authors: [slqmy]
+name: rank-system-plugin
+version: 1.0.0-SNAPSHOT
+main: net.slqmy.rank_system_plugin.RankSystemPlugin
+api-version: 1.21
+prefix: rank-system-plugin
+authors: [Slqmy]
 description: A simple rank system project. Saves ranks to a yml file, supports prefixes and permissions as well as chat and tab list prefixes. Tab list players are sorted based on their rank.
 commands:
   rank:
