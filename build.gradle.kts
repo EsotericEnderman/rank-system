@@ -74,3 +74,15 @@ tasks {
     options.encoding = Charsets.UTF_8.name()
   }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            groupId = project.group.toString()
+            artifactId = rootProject.name
+            version = project.version.toString()
+        }
+    }
+}
