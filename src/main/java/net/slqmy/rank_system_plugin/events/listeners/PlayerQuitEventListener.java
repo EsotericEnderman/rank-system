@@ -1,4 +1,4 @@
-package net.slqmy.rank_system.events.listeners;
+package net.slqmy.rank_system_plugin.events.listeners;
 
 import java.util.Map;
 import java.util.UUID;
@@ -10,14 +10,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 import org.jetbrains.annotations.NotNull;
 
-import net.slqmy.rank_system.RankSystem;
-import net.slqmy.rank_system.managers.NameTagManager;
+import net.slqmy.rank_system_plugin.RankSystemPlugin;
+import net.slqmy.rank_system_plugin.managers.NameTagManager;
 
 public final class PlayerQuitEventListener implements Listener {
   private final NameTagManager nameTagManager;
   private final Map<UUID, PermissionAttachment> permissions;
 
-  public PlayerQuitEventListener(@NotNull final RankSystem plugin) {
+  public PlayerQuitEventListener(@NotNull final RankSystemPlugin plugin) {
     this.nameTagManager = plugin.getNameTagManager();
     this.permissions = plugin.getRankManager().getPermissions();
   }

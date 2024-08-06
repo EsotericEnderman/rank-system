@@ -1,4 +1,4 @@
-package net.slqmy.rank_system.events.listeners;
+package net.slqmy.rank_system_plugin.events.listeners;
 
 import java.util.Map;
 import java.util.UUID;
@@ -11,20 +11,20 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.permissions.PermissionAttachment;
 import org.jetbrains.annotations.NotNull;
 
-import net.slqmy.rank_system.RankSystem;
-import net.slqmy.rank_system.managers.NameTagManager;
-import net.slqmy.rank_system.managers.RankManager;
-import net.slqmy.rank_system.types.Rank;
-import net.slqmy.rank_system.utility.Utility;
+import net.slqmy.rank_system_plugin.RankSystemPlugin;
+import net.slqmy.rank_system_plugin.managers.NameTagManager;
+import net.slqmy.rank_system_plugin.managers.RankManager;
+import net.slqmy.rank_system_plugin.types.Rank;
+import net.slqmy.rank_system_plugin.utility.Utility;
 
 public final class PlayerJoinEventListener implements Listener {
-  private final RankSystem plugin;
+  private final RankSystemPlugin plugin;
   private final YamlConfiguration config;
   private final RankManager rankManager;
   private final NameTagManager nameTagManager;
   private final Map<UUID, PermissionAttachment> permissions;
 
-  public PlayerJoinEventListener(@NotNull final RankSystem plugin) {
+  public PlayerJoinEventListener(@NotNull final RankSystemPlugin plugin) {
     this.plugin = plugin;
     this.config = (YamlConfiguration) plugin.getConfig();
     this.rankManager = plugin.getRankManager();

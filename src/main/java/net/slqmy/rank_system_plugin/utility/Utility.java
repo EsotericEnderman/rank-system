@@ -1,12 +1,13 @@
-package net.slqmy.rank_system.utility;
+package net.slqmy.rank_system_plugin.utility;
 
-import net.slqmy.rank_system.RankSystem;
-import net.slqmy.rank_system.utility.types.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import net.slqmy.rank_system_plugin.RankSystemPlugin;
+import net.slqmy.rank_system_plugin.utility.types.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public final class Utility {
 	private static final Pattern FORMAT_PATTERN = Pattern.compile(ChatColor.COLOR_CHAR + "[0-9a-fk-or]");
 
 	public static @Nullable Pair<@NotNull File, @NotNull YamlConfiguration> initiateYAMLFile(@NotNull String name,
-			final @NotNull RankSystem plugin)
+			final @NotNull RankSystemPlugin plugin)
 			throws IOException {
 		final File pluginDataFolder = plugin.getDataFolder();
 		name += ".yml";

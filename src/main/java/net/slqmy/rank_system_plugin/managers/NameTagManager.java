@@ -1,13 +1,14 @@
-package net.slqmy.rank_system.managers;
+package net.slqmy.rank_system_plugin.managers;
 
-import net.slqmy.rank_system.RankSystem;
-import net.slqmy.rank_system.types.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+
+import net.slqmy.rank_system_plugin.RankSystemPlugin;
+import net.slqmy.rank_system_plugin.types.Rank;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public final class NameTagManager {
 	private final RankManager rankManager;
 	private final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 
-	public NameTagManager(final @NotNull RankSystem plugin) {
+	public NameTagManager(final @NotNull RankSystemPlugin plugin) {
 		rankManager = plugin.getRankManager();
 	}
 

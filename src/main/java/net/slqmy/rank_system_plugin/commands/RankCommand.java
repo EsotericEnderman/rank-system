@@ -1,10 +1,5 @@
-package net.slqmy.rank_system.commands;
+package net.slqmy.rank_system_plugin.commands;
 
-import net.slqmy.rank_system.RankSystem;
-import net.slqmy.rank_system.events.custom_events.RankChangeEvent;
-import net.slqmy.rank_system.managers.RankManager;
-import net.slqmy.rank_system.types.Rank;
-import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -18,6 +13,12 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
+import net.slqmy.rank_system_plugin.RankSystemPlugin;
+import net.slqmy.rank_system_plugin.events.custom_events.RankChangeEvent;
+import net.slqmy.rank_system_plugin.managers.RankManager;
+import net.slqmy.rank_system_plugin.types.Rank;
+import net.slqmy.rank_system_plugin.utility.Utility;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public final class RankCommand implements CommandExecutor, TabCompleter {
 
 	private final RankManager rankManager;
 
-	public RankCommand(final @NotNull RankSystem plugin) {
+	public RankCommand(final @NotNull RankSystemPlugin plugin) {
 		this.rankManager = plugin.getRankManager();
 	}
 

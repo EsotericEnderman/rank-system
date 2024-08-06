@@ -1,4 +1,4 @@
-package net.slqmy.rank_system.events.custom_events;
+package net.slqmy.rank_system_plugin.events.custom_events;
 
 import javax.annotation.Nullable;
 
@@ -8,7 +8,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-import net.slqmy.rank_system.types.Rank;
+import net.slqmy.rank_system_plugin.types.Rank;
 
 public final class RankChangeEvent extends Event implements Cancellable {
 	private static final HandlerList HANDLERS = new HandlerList();

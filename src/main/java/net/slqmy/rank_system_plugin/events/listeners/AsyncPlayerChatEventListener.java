@@ -1,4 +1,4 @@
-package net.slqmy.rank_system.events.listeners;
+package net.slqmy.rank_system_plugin.events.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,13 +9,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jetbrains.annotations.NotNull;
 
-import net.slqmy.rank_system.RankSystem;
-import net.slqmy.rank_system.managers.RankManager;
+import net.slqmy.rank_system_plugin.RankSystemPlugin;
+import net.slqmy.rank_system_plugin.managers.RankManager;
 
 public final class AsyncPlayerChatEventListener implements Listener {
 	private final RankManager rankManager;
 
-	public AsyncPlayerChatEventListener(@NotNull final RankSystem plugin) {
+	public AsyncPlayerChatEventListener(@NotNull final RankSystemPlugin plugin) {
 		this.rankManager = plugin.getRankManager();
 	}
 

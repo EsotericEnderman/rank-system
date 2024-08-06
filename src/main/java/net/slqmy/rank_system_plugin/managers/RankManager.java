@@ -1,14 +1,15 @@
-package net.slqmy.rank_system.managers;
+package net.slqmy.rank_system_plugin.managers;
 
-import net.slqmy.rank_system.RankSystem;
-import net.slqmy.rank_system.types.Rank;
-import net.slqmy.rank_system.utility.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import net.slqmy.rank_system_plugin.RankSystemPlugin;
+import net.slqmy.rank_system_plugin.types.Rank;
+import net.slqmy.rank_system_plugin.utility.Utility;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,12 +32,12 @@ public final class RankManager {
 			"n", "o",
 			"p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
 
-	private final RankSystem plugin;
+	private final RankSystemPlugin plugin;
 	private final YamlConfiguration config;
 	private final YamlConfiguration playerRanksConfig;
 	private final Map<UUID, PermissionAttachment> permissions = new HashMap<>();
 
-	public RankManager(final @NotNull RankSystem plugin) {
+	public RankManager(final @NotNull RankSystemPlugin plugin) {
 		this.plugin = plugin;
 		this.config = (YamlConfiguration) plugin.getConfig();
 		this.playerRanksConfig = plugin.getPlayerRanksConfig();

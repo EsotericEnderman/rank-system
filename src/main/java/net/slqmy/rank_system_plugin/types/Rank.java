@@ -1,4 +1,4 @@
-package net.slqmy.rank_system.types;
+package net.slqmy.rank_system_plugin.types;
 
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.Contract;

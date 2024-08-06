@@ -1,14 +1,5 @@
-package net.slqmy.rank_system;
+package net.slqmy.rank_system_plugin;
 
-import net.slqmy.rank_system.commands.RankCommand;
-import net.slqmy.rank_system.events.listeners.AsyncPlayerChatEventListener;
-import net.slqmy.rank_system.events.listeners.PlayerJoinEventListener;
-import net.slqmy.rank_system.events.listeners.PlayerQuitEventListener;
-import net.slqmy.rank_system.managers.NameTagManager;
-import net.slqmy.rank_system.managers.RankManager;
-import net.slqmy.rank_system.types.Rank;
-import net.slqmy.rank_system.utility.Utility;
-import net.slqmy.rank_system.utility.types.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,12 +8,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.slqmy.rank_system_plugin.commands.RankCommand;
+import net.slqmy.rank_system_plugin.events.listeners.AsyncPlayerChatEventListener;
+import net.slqmy.rank_system_plugin.events.listeners.PlayerJoinEventListener;
+import net.slqmy.rank_system_plugin.events.listeners.PlayerQuitEventListener;
+import net.slqmy.rank_system_plugin.managers.NameTagManager;
+import net.slqmy.rank_system_plugin.managers.RankManager;
+import net.slqmy.rank_system_plugin.types.Rank;
+import net.slqmy.rank_system_plugin.utility.Utility;
+import net.slqmy.rank_system_plugin.utility.types.Pair;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class RankSystem extends JavaPlugin {
+public final class RankSystemPlugin extends JavaPlugin {
 
 	/*
 	 * /rank command. /rank <player> <rank name>
