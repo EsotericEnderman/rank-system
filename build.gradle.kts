@@ -71,6 +71,10 @@ dependencies {
 }
 
 tasks {
+  build {
+    dependsOn(shadowJar)
+  }
+
   compileJava {
     options.release = javaVersion
   }
@@ -91,7 +95,12 @@ publishing {
               return "$buildDir/libs/" + projectNameString + "-" + projectVersionString + "-" + classifier + ".jar"
             }
 
+            val devAllClassifier = "dev-all"
             val devClassifier = "dev"
+
+            artifact(artifactPath(devAllClassifier)) {
+                classifier = devAllClassifier
+            }
 
             artifact(artifactPath(devClassifier)) {
                 classifier = devClassifier
@@ -101,5 +110,5 @@ publishing {
 }
 
 tasks.named("publishMavenJavaPublicationToMavenLocal") {
-  dependsOn(tasks.named("jar"))
+  dependsOn(tasks.named("build"))
 }
